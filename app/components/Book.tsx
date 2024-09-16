@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { BookType } from "../types/types";
+import { BookType, User } from "../types/types";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -16,7 +16,13 @@ type BookProps = {
 const Book = ({ book, isPurchased }: BookProps) => {
   const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
-  const user: any = session?.user;
+  const user: User = session?.user ?? {
+    id: "",
+    name: "",
+    email: "",
+    image: "",
+  };
+
   const router = useRouter();
   const handleCancel = () => {
     setShowModal(false);
