@@ -16,7 +16,7 @@ type BookProps = {
 const Book = ({ book, isPurchased }: BookProps) => {
   const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
-  const user: User = session?.user!;
+  const user: User | undefined = session?.user;
 
   const router = useRouter();
   const handleCancel = () => {
