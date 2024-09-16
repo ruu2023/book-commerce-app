@@ -2,8 +2,8 @@ import { BookType } from "@/app/types/types";
 import { createClient } from "microcms-js-sdk";
 
 export const client = createClient({
-  serviceDomain: process.env.NEXT_PUBLIC_SERVICE_DOMAIN!,
-  apiKey: process.env.NEXT_PUBLIC_API_KEY!,
+  serviceDomain: process.env.NEXT_PUBLIC_SERVICE_DOMAIN ?? "default_value",
+  apiKey: process.env.NEXT_PUBLIC_API_KEY ?? "default_value",
 });
 
 export const getAllBooks = async () => {
