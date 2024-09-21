@@ -2,10 +2,10 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../prisma";
-import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
+
 export const nextAuthOptions: NextAuthOptions = {
-  debug: false,
+  debug: true,
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
@@ -14,53 +14,76 @@ export const nextAuthOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        username: {
+          label: "Username",
+          type: "text",
+          placeholder: "空欄で構いません",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "空欄で構いません",
+        },
       },
-      async authorize(credentials) {
+      async authorize() {
+        // Prisma を使用してデータベースからユーザーを取得
         const user = await prisma.user.findUnique({
-          where: { email: credentials?.email },
+          where: {
+            email: "guest@example.com",
+          },
         });
-
-        if (user && credentials?.password && user.password) {
-          // パスワードの検証
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-          if (isValid) {
-            return user;
-          }
+        if (user) {
+          // パスワードが一致する場合に認証成功
+          console.log("認証成功!!!");
+          return user;
         }
-
-        // 認証失敗
+        // 認証失敗時は null を返す
+        console.log("認証失敗");
         return null;
       },
     }),
   ],
-  pages: {
-    signIn: "/auth/signin", // カスタムサインインページ
-  },
   session: {
     strategy: "jwt",
   },
+  jwt: {
+    // secret: process.env.NEXTAUTH_JWT_SECRET,
+  },
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, session }) {
+      console.log("jwt callback", { token, user, session });
+
+      //pass in user id to token
       if (user) {
-        token.id = user.id;
+        return {
+          ...token,
+          id: user.id,
+        };
       }
       return token;
     },
-    session: ({ session, user }) => {
+    async session({ session, token, user }) {
+      console.log("session callback", { session, token, user });
+
+      //pass in user id to session
       return {
         ...session,
         user: {
           ...session.user,
-          id: user.id,
+          id: token.id,
         },
       };
     },
+    // session: ({ session, user }) => {
+    //   return {
+    //     ...session,
+    //     user: {
+    //       ...session.user,
+    //       id: user.id,
+    //     },
+    //   };
+    // },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
