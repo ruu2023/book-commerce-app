@@ -12,18 +12,18 @@ export const nextAuthOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: "Guest Account",
       credentials: {
-        username: {
-          label: "Username",
-          type: "text",
-          placeholder: "空欄で構いません",
-        },
-        password: {
-          label: "Password",
-          type: "password",
-          placeholder: "空欄で構いません",
-        },
+        // username: {
+        //   label: "Username",
+        //   type: "text",
+        //   placeholder: "空欄で構いません",
+        // },
+        // password: {
+        //   label: "Password",
+        //   type: "password",
+        //   placeholder: "空欄で構いません",
+        // },
       },
       async authorize() {
         const user = await prisma.user.findUnique({
@@ -38,6 +38,9 @@ export const nextAuthOptions: NextAuthOptions = {
       },
     }),
   ],
+  // pages: {
+  //   signIn: "/login/guest",
+  // },
   session: {
     strategy: "jwt",
   },
