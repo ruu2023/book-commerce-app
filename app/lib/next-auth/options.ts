@@ -26,19 +26,14 @@ export const nextAuthOptions: NextAuthOptions = {
         },
       },
       async authorize() {
-        // Prisma を使用してデータベースからユーザーを取得
         const user = await prisma.user.findUnique({
           where: {
             email: "guest@example.com",
           },
         });
         if (user) {
-          // パスワードが一致する場合に認証成功
-          console.log("認証成功!!!");
           return user;
         }
-        // 認証失敗時は null を返す
-        console.log("認証失敗");
         return null;
       },
     }),
@@ -47,7 +42,7 @@ export const nextAuthOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   jwt: {
-    // secret: process.env.NEXTAUTH_JWT_SECRET,
+    secret: process.env.NEXTAUTH_JWT_SECRET,
   },
   adapter: PrismaAdapter(prisma),
   callbacks: {
@@ -75,15 +70,6 @@ export const nextAuthOptions: NextAuthOptions = {
         },
       };
     },
-    // session: ({ session, user }) => {
-    //   return {
-    //     ...session,
-    //     user: {
-    //       ...session.user,
-    //       id: user.id,
-    //     },
-    //   };
-    // },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

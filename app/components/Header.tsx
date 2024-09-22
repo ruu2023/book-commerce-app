@@ -18,12 +18,6 @@ const Header = async () => {
         </Link>
         <div className="flex items-center gap-1">
           <Link
-            href="/"
-            className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-          >
-            ホーム
-          </Link>
-          <Link
             href={user ? "/profile" : "/api/auth/signin"}
             className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
           >
@@ -39,14 +33,18 @@ const Header = async () => {
           ) : (
             ""
           )}
-          <Link href={`/profile`}>
-            <Image
-              width={50}
-              height={50}
-              alt="profile_icon"
-              src={user?.image || "/default_icon.png"}
-            />
-          </Link>
+          {user ? (
+            <Link href={"/profile"}>
+              <Image
+                width={50}
+                height={50}
+                alt="profile_icon"
+                src={user?.image || "/default_icon.png"}
+              />
+            </Link>
+          ) : (
+            ""
+          )}
         </div>
       </nav>
     </header>
