@@ -24,24 +24,22 @@ const Header = async () => {
             {user ? "プロフィール" : "ログイン"}
           </Link>
           {user ? (
-            <Link
-              href={"/api/auth/signout"}
-              className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-            >
-              ログアウト
-            </Link>
-          ) : (
-            ""
-          )}
-          {user ? (
-            <Link href={"/profile"}>
-              <Image
-                width={50}
-                height={50}
-                alt="profile_icon"
-                src={user?.image || "/default_icon.png"}
-              />
-            </Link>
+            <div className="flex items-center">
+              <Link
+                href={"/api/auth/signout"}
+                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                ログアウト
+              </Link>
+              <Link href={"/profile"}>
+                <Image
+                  width={50}
+                  height={50}
+                  alt="profile_icon"
+                  src={user?.image || "/default_icon.png"}
+                />
+              </Link>
+            </div>
           ) : (
             ""
           )}
